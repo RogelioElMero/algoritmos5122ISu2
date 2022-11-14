@@ -1,0 +1,374 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace HelloWold
+{
+    public static class Program
+    {
+        public static void Main()
+        {
+
+
+            int opciones = 0, lim, Y = 0, X = 0, Z = 0, num1 = 0, num2 = 0, num3 = 0, num12 = 0, num22 = 0, num32 = 0, s1 = 0, s2 = 0, s3 = 0, total = 0;
+
+            string concat, aux, texto;
+            //matrices necesarias para encriptar y desencriptar
+            int[] arrayDecifrado =
+            {   -3,1,7,   6,-2,-3,   2,3,-1  };
+
+            int[] arrayCifrado =
+                {  1, 2, 1 ,   0, -1, 3 ,   2, 1, 0  };
+
+
+
+            //solicitar la accion a realizar
+            Console.WriteLine("ingrese la accion a realizar: \n  1.- encriptar una cadena \n  2.- desencriptar un texto ");
+            Console.Write(" -> "); opciones = int.Parse(Console.ReadLine());
+
+
+            //menu de opciones
+            switch (opciones)
+            {
+
+
+                //caso 1, es para encriptar la cadenas
+                case 1:
+
+                    //solicita una cadena de texto y agrega los nuneros necesarios para ser multiplo de 3 
+                    Console.WriteLine("ingrese el mensaje que desea encriptar: ");
+                    texto = Console.ReadLine();
+                    lim = texto.Length;
+                    if (lim != 0)
+                    {
+                        if (lim % 3 == 1)
+                        {
+                            texto = texto.Insert(lim, "  ");
+                            lim = texto.Length;
+                        }
+                        else if (lim % 3 == 2)
+                        {
+                            texto = texto.Insert(lim, " ");
+                            lim = texto.Length;
+                        }
+                        else
+                        {
+                            lim = texto.Length;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("no existe texto alguno");
+                    }
+
+
+                    //array que se usan para el codigo 
+                    char[] arrayT = new char[lim];
+                    char[] arrayT2 = new char[lim];
+                    int[] arrayN = new int[lim];
+
+                    int[] arrayAux = new int[lim];
+                    int[] arrayAux2 = new int[lim];
+
+                    
+                    //convierte la cadena de texto a un arreglo numerico con base la tabla dada en clase y lo almacena en arrayN
+
+                    for (int i = 0; i < lim; i++)
+                    {
+                        arrayT[i] = char.Parse(texto.Substring(i, 1));
+                        //Console.WriteLine(texto.Substring(i,1));
+                    }
+
+                    //Console.WriteLine("--");
+
+                    for (int i = 0; i < arrayT.Length; i++)
+                    {
+
+                        arrayN[i] = SAN(arrayT[i]);
+                        // Console.WriteLine(arrayN[i]);
+                    }
+
+
+
+                    
+                    //encriptacion del array de numeros y agregarlos en arrayAux ya estando encriptado por la matriz
+                    for (int i = 0; i < arrayN.Length; i += 3)
+                    {
+
+                        for (int j = 0; j < 3; j++)
+                        {
+                            num1 = arrayCifrado[j];
+                            num2 = arrayCifrado[j + 3];
+                            num3 = arrayCifrado[j + 6];
+                            num12 = arrayN[i];
+                            num22 = arrayN[i + 1];
+                            num32 = arrayN[i + 2];
+                            s1 = num1 * num12;
+
+                            s2 = num2 * num22;
+                            s3 = num3 * num32;
+                            total = s1 + s2 + s3;
+                            //Console.WriteLine(num1+" x "+num12);
+                            //Console.WriteLine(num2+" x "+num22);
+                            //Console.WriteLine(num3+" x "+num32);
+                            //Console.WriteLine("result: {0}",total);
+                            //Console.WriteLine(" ----- ");
+                            arrayAux[X] = total;
+                            if (X < arrayAux.Length)
+                            {
+                                X++;
+                            }
+
+                        }
+
+                    }
+
+                    //mostrar la cadena que devuelve al estar encriptada esta cadena
+
+                    Console.WriteLine("\ncadena de texto encriptada\n");
+                               
+                    for (int y = 0; y < arrayAux2.Length; y++)
+                    {
+                        Console.Write(arrayAux[y] + " ");
+                    }
+                    Console.WriteLine("\n");
+
+                    break;
+
+
+
+
+                //caso2, es para desencriptar una cadena de numeros
+                case 2:
+
+
+                    Console.WriteLine("ingrese el mensaje enciptado (espacios entre cada numero)");
+                    texto = Console.ReadLine();
+
+                    X = texto.Length;
+                    texto = texto.Insert(X, " ");
+
+
+                    char[] textoP = new char[texto.Length];
+
+                    //verifica que tenga un tamaño si no este no existe
+                    if (texto.Length == 0)
+                    {
+
+                        Console.WriteLine("no se ingreso un texto");
+
+                    }
+                    else
+                    {
+
+                        //dividor el texto en caracteres 
+                        for (int i = 0; i < texto.Length; i++)
+                        {
+
+                            textoP[i] = char.Parse(texto.Substring(i, 1));
+                            //Console.WriteLine(texto.Substring(i,1));
+                            //		Console.WriteLine(textoP[i]);
+                        }
+
+                        X = 1;
+
+                        // bucle para darle un tamaño al arreglo de numeros
+                        for (int j = 0; j < textoP.Length; j++)
+                        {
+                            if (textoP[j].Equals(' '))
+                            {
+                                X++;
+                            }
+                        }
+
+
+                        //extrae los numeros del arreglo de caracteres, y los almaceno en otro arreglo -> cadN
+                        int[] cadN = new int[textoP.Length];
+                        //Console.WriteLine("X " +X);
+                        concat = "";
+                        for (int k = 0; k < textoP.Length; k++)
+                        {
+
+                            if (textoP[k].Equals(' '))
+                            {
+
+                                Y = 0;
+                                if (concat.Length != 0)
+                                {
+
+                                    cadN[Z] = int.Parse(concat);
+                                    Z++;
+                                }
+                                concat = "";
+
+                            }
+                            else
+                            {
+
+                                aux = textoP[k].ToString();
+                                concat = concat.Insert(Y, aux);
+                                //						Console.WriteLine(concat);
+                                Y++;
+
+                            }
+
+
+                        }
+
+
+                        //mostrar arreglo de numeros 
+                        //	Console.WriteLine("numeros en cadN");
+                
+
+
+                        //agrega espacios en el arreglo para poder ser compativle con el otro y la matriz desencripta
+                        X = cadN.Length;
+                        if (X % 3 == 1)
+                        {
+                            X = X + 2;
+                        }
+                        else if (X % 3 == 2)
+                        {
+                            X = X + 1;
+                        }
+
+
+                        int[] cadNum = new int[X];
+                        int[] cadNum2 = new int[X];
+                        
+                        //	Console.WriteLine("X de cadNum "+X);
+
+
+
+                        //	Console.WriteLine("arreglo de los numeros separados: ");
+                        for (int m = 0; m < cadN.Length; m++)
+                        {
+
+                            cadNum[m] = cadN[m];
+                            //			Console.WriteLine(cadNum[m]);
+                        }
+
+                        //		foreach(var a in cadNum){
+
+                        //						Console.WriteLine(a);
+
+
+                        //		}
+
+
+                        // multiplicar la matriz por la matriz desencriptadora 
+
+
+                        X = 0;
+                        for (int i = 0; i < cadNum.Length; i += 3)
+                        {
+
+                            for (int j = 0; j < 3; j++)
+                            {
+                                num1 = arrayDecifrado[j];
+                                num2 = arrayDecifrado[j + 3];
+                                num3 = arrayDecifrado[j + 6];
+                                num12 = cadNum[i];
+                                num22 = cadNum[i + 1];
+                                num32 = cadNum[i + 2];
+                                s1 = num1 * num12;
+                                s2 = num2 * num22;
+                                s3 = num3 * num32;
+                                total = (s1 + s2 + s3) / 11;
+                                //Console.WriteLine(num1 + " x " + num12);
+                                //Console.WriteLine(num2 + " x " + num22);
+                                //Console.WriteLine(num3 + " x " + num32);
+                                //Console.WriteLine("result: {0}", total);
+                                //Console.WriteLine(" ----- ");
+                                cadNum2[X] = total;
+                                if (X < cadNum2.Length)
+                                {
+                                    X++;
+                                }
+
+                            }
+
+                        }
+
+                           
+                        //muestra la cadena de numeros en caracterer los cuales supuestamente tienen una frase
+                        Console.WriteLine("la frase encriptada era:\n ");
+
+                        for (int n = 0; n < cadNum2.Length; n++)
+                        {
+
+                            Console.Write(NAS(cadNum2[n]));
+
+                        }
+
+                        Console.WriteLine("\n");
+
+
+                    }
+                    break;
+
+                                  
+
+                default:
+                    Console.WriteLine("\n esa opcion no existe \n");
+
+                    break;
+
+            }
+
+
+          
+        }
+
+
+        /**
+        ->char
+        <-int
+
+        funciom que le un caracter y te devuelve un valor
+        de este basandose en la tabla antes dada
+        el nombre es SAN por que es de String a numero
+        */
+        public static int SAN(char carac)
+        {
+            char[] abc = { ' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '.' };
+            int num = -1;
+            for (int j = 0; j < abc.Length; j++)
+            {
+                if (carac.Equals(abc[j]))
+                {
+                    num = j;
+                }
+
+            }
+
+
+            return num;
+        }
+
+        /**
+        ->int
+        <-char
+        
+        funciln donde se recibe un numero y este
+         de vuelve un caracter basandose en la tabla dada
+        el nombre es NAS porque es de numero a string
+        */
+        public static char NAS(int n)
+        {
+            char[] abc = { ' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '.' };
+            char s = '#';
+
+            if (n < 30 && n > -1)
+            {
+
+                s = abc[n];
+
+            }
+
+            return s;
+        }
+
+
+    }
+}
